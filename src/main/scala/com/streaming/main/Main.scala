@@ -1,8 +1,6 @@
 package com.streaming.main
 
 import com.streaming.utils.LoggingUtils
-import org.slf4j.LoggerFactory
-import org.slf4j.Logger
 
 abstract class Main extends LoggingUtils {
   // Logger
