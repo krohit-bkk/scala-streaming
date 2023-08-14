@@ -19,10 +19,8 @@ import scala.concurrent.duration.{Duration, FiniteDuration}
 object ProducerApp extends Main{
   // Check arguments
   def isArgumentsValid(args: Array[String]): Boolean = {
-    println(s"INFO: Argument summary:")
-    for(arg <- args){
-      println(s"INFO: \targ: ${arg}")
-    }
+    // Print args details...
+    printArgs(args)
 
     if (args == null || args.length != 3) {
       logger.error(s"Invalid number of arguments [${args.length}].")

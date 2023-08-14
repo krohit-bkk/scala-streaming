@@ -7,15 +7,14 @@ import com.streaming.utils.{AvroUtils, KafkaUtils}
 object ConsumerApp extends Main{
   // Check arguments
   def isArgumentsValid(args: Array[String]) : Boolean = {
-    println(s"INFO: Argument summary:")
-    for (arg <- args) {
-      println(s"INFO: \targ: ${arg}")
-    }
+    // Print args details...
+    printArgs(args)
 
-    if(args == null || args.length != 2){
+    if(args == null || args.length != 3){
       logger.error(s"Invalid number of arguments [${args.length}].")
       logger.error(s"\t[0] - Kafka broker urls with port number")
       logger.error(s"\t[1] - Kafka topic to work with")
+      logger.error(s"\t[2] - Flag isAvroSupported (default=False)")
       return false
     }
     true
