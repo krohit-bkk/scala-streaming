@@ -27,6 +27,7 @@ object ConsumerApp extends Main{
     // Check input parameters and set defaults
     // Args(0) - Kafka broker urls with port number (comma separated)
     // Args(1) - Kafka topic
+    // Args(2) - Flag to set AVRO support On/Off [True/False], (default=False)
     if(!isArgumentsValid(args))
       System.exit(-1)
     else {
