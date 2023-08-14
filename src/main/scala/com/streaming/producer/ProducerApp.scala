@@ -53,7 +53,6 @@ object ProducerApp extends Main{
         println(formattedLine)
         KafkaUtils.sendAsyncMessage(line)
         Thread.sleep(delay.toMillis) // Introduce a delay of 2 seconds
-        // Add your more complex operations here
       }
 
       // Create a sink using the defined function
