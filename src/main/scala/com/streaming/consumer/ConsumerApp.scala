@@ -23,7 +23,6 @@ object ConsumerApp extends Main{
 
   // Entry point to the application
   override def run(args: Array[String]): Unit = {
-    val args = Array("Brokers", "topic")
     logger.info(s"Starting Consumer App...")
 
     // Check input parameters and set defaults
