@@ -22,45 +22,42 @@ object ProducerApp extends Main{
     // Print args details...
     printArgs(args)
 
-    if (args == null || args.length != 3) {
+    if (args == null || args.length < 4) {
       logger.error(s"Invalid number of arguments [${args.length}].")
       logger.error(s"\t[0] - Kafka broker urls with port number")
       logger.error(s"\t[1] - Kafka topic to work with")
       logger.error(s"\t[2] - Flag isAvroSupported (default=False)")
+      logger.error(s"\t[3] - Path of CSV to be streamed")
       return false
     }
     true
   }
 
   // Read CSV using Alpakka (Akka Stream) and push to Kafka topic
-  def readAndShootCSV() : Unit = {
+  def readAndShootCSV(defaultPath: String) : Unit = {
     implicit val system: ActorSystem = ActorSystem("AlpakkaCsvReader")
-    // val csvFilePath = "/Volumes/WD_SSD/Kumar_Rohit/Learning/CompanyUsecases/HonestBankStreamingUsecase/Data/accepted_2007_to_2018Q4.csv"
-    val csvFilePath = "/home/krohit/Documents/f.txt"
+    val csvFilePath = if(defaultPath == null) "/home/krohit/Documents/f.txt" else defaultPath
     val delay: FiniteDuration = Duration.create(3, "seconds")
 
     try {
-      var lineNumber = 1
       val source: Source[String, _] = FileIO.fromPath(java.nio.file.Paths.get(csvFilePath))
         .via(Framing.delimiter(ByteString("\n"), maximumFrameLength = 20000, allowTruncation = true))
         .map(byteString => byteString.utf8String)
 
-      // Define a function that takes line and line number as arguments
-      def processLineAndNumber(lineNumber: Int, line: String): Unit = {
-        val formattedLine = s"[$lineNumber] >>>> $line"
-        println(formattedLine)
-        KafkaUtils.sendAsyncMessage(line)
-        Thread.sleep(delay.toMillis) // Introduce a delay of 2 seconds
-      }
-
       // Create a sink using the defined function
       val sink = Sink.foreach[String] { line =>
-        processLineAndNumber(lineNumber, line)
-        lineNumber += 1
+        KafkaUtils.sendAsyncMessage(line)
+        Thread.sleep(delay.toMillis)
       }
 
       val stream = source.runWith(sink)
       Await.result(stream, Duration.Inf)
+    }
+    catch {
+      case e: Exception => {
+        e.printStackTrace()
+        logger.error(e.getStackTrace.toString)
+      }
     }
     finally {
       // Wait for the stream to complete before terminating the actor system
@@ -85,7 +82,7 @@ object ProducerApp extends Main{
         KafkaUtils.setKafkaConfigs(args(0), args(1), "False")
     }
     // Read CSV and push to Kafka topic
-    readAndShootCSV
+    readAndShootCSV(defaultPath = args(3))
 
     // Close Kafka
     KafkaUtils.close()

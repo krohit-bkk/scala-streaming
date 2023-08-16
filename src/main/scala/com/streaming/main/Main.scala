@@ -11,13 +11,11 @@ abstract class Main extends LoggingUtils {
 
   // Print argument details
   def printArgs(args: Array[String]) = {
-    println(s"INFO: Argument summary:")
     logger.info(s"INFO: Argument summary:")
-    for (arg <- args) {
-      println(s"INFO: \targ: ${arg}")
+    for (arg <- args)
       logger.info(s"INFO: \targ: ${arg}")
-    }
   }
+
   def main(args: Array[String]): Unit = {
     logger.info(s"Starting application...")
     run(args)

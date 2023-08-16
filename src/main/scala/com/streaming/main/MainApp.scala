@@ -2,7 +2,8 @@ package com.streaming.main
 
 import com.streaming.producer.ProducerApp
 import com.streaming.consumer.ConsumerApp
-object MainApp {
+import com.streaming.utils.LoggingUtils
+object MainApp extends LoggingUtils{
   def main(args: Array[String]): Unit = {
     if (args.nonEmpty) {
       args.head match {
@@ -11,7 +12,8 @@ object MainApp {
         case _ => println("Invalid argument")
       }
     } else {
-      println("Usage: MainApp [App1|App2] [args...]")
+      println("Usage: MainApp [ProducerApp|ConsumerApp] [args...]")
+      logger.info("Usage: MainApp [ProducerApp|ConsumerApp] [args...]")
     }
   }
 }
